@@ -19,11 +19,7 @@ class ExpenseItem extends StatelessWidget {
               children: [
                 Text(
                   expenseModel.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                    color: Colors.black87,
-                  ),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
             ),
