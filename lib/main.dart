@@ -1,5 +1,5 @@
 import 'package:expense_tracker/Presentation/pages/expense_page.dart';
-import 'package:expense_tracker/core/constant/app_color_scheme.dart';
+import 'package:expense_tracker/core/constant/app_theme.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +18,8 @@ class ExpenseApp extends StatelessWidget {
     return MaterialApp(
       title: 'Expense Tracker',
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       home: const ExpensePage(),
     );
