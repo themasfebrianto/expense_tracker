@@ -2,11 +2,12 @@ import 'package:expense_tracker/Data/models/expense_model.dart';
 import 'package:expense_tracker/core/enums/category_enum.dart';
 import 'package:expense_tracker/core/utils/date_formater.dart';
 import 'package:expense_tracker/core/utils/number_helper.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class NewExpense extends StatefulWidget {
-  const NewExpense({super.key});
+  const NewExpense({super.key, required this.onAddExpense});
+
+  final void Function(ExpenseModel expense) onAddExpense;
 
   @override
   State<NewExpense> createState() {
@@ -31,6 +32,47 @@ class _NewExpenseState extends State<NewExpense> {
     setState(() {
       _selectedDate = pickedDate;
     });
+  }
+
+  void _submitExpenseData() {
+    final enteredAmount = double.tryParse(
+      _amountController.text.replaceAll(RegExp(r'[^0-9]'), ''),
+    );
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+    if (_titleController.text.trim().isEmpty ||
+        amountIsInvalid ||
+        _selectedDate == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Invalid input'),
+          content: const Text(
+            'please make sure a valid title, amount and category was entered',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text('Okay'),
+            ),
+          ],
+        ),
+      );
+      return;
+    } // validasi user input dulu apakah ada yang null dan invalid baru lanjut submit
+
+    // submit logic
+    widget.onAddExpense(
+      ExpenseModel(
+        title: _titleController.text,
+        category: _selectedCategory,
+        amount: enteredAmount,
+        date: _selectedDate!,
+      ),
+    );
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -117,16 +159,7 @@ class _NewExpenseState extends State<NewExpense> {
               ),
               SizedBox(width: 10),
               ElevatedButton(
-                onPressed: () {
-                  print(_titleController.text);
-                  print(_amountController.text);
-                  print(
-                    _selectedDate == null
-                        ? 'No date selected'
-                        : localDate.format(_selectedDate!),
-                  );
-                  print(_selectedCategory);
-                },
+                onPressed: _submitExpenseData,
                 child: const Text('Save Expense'),
               ),
             ],
